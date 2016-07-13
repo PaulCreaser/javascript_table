@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tracker Application</title>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="simple_table.js"></script>
+    <script type="text/javascript">
+       var socket = null;
+       function on_load()
+       {
+	    // Setup tables and map
+            socket = io.connect("http://localhost:8124");
+            simple_table.init(document);
+            socket.on("message",function(message) {
+		console.log(message);
+                simple_table.update(message);
+            });
+        }
+
+        function on_unload()
+        {
+            if (socket != null) socket.disconnect();
+        }
+
+    </script>
+</head>
+<body onload="on_load()" onunload="on_unload()">
+	<div id="wrapper">
+		<div id="main">
+			<div id="simple_table">
+			</div>
+		</div>
+	</div>
+</body>
+</html>
