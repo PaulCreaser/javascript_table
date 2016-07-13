@@ -12,10 +12,10 @@ var simple_table = {
 };
 
 simple_table.init = function(doc) {
-	this.div    = doc.getElementById('simple_table')
-	this.table  = document.createElement("table");
-	this.div.appendChild(this.table);
 	this.doc    = doc;
+	this.div    = doc.getElementById('simple_table')
+	this.table  = doc.createElement("table");
+	this.div.appendChild(this.table);
 	this.lookup = {};
 	this.create_header();
 	this.create_body();
