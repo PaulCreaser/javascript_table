@@ -6,14 +6,17 @@
     <script type="text/javascript" src="simple_table.js"></script>
     <script type="text/javascript">
        var socket = null;
+       var table1  = null;
+       var table2  = null;
        function on_load()
        {
 	    // Setup tables and map
             socket = io.connect("http://localhost:8124");
-            simple_table.init(document);
+            table1 = new simple_table(document, 'simple_table1');
+            table2 = new simple_table(document, 'simple_table2');
             socket.on("message",function(message) {
-		console.log(message);
-                simple_table.update(message);
+                table1.update(message);
+                table2.update(message);
             });
         }
 
@@ -27,7 +30,9 @@
 <body onload="on_load()" onunload="on_unload()">
 	<div id="wrapper">
 		<div id="main">
-			<div id="simple_table">
+			<div id="simple_table1">
+			</div>
+			<div id="simple_table2">
 			</div>
 		</div>
 	</div>

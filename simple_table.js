@@ -1,27 +1,25 @@
 /**
 * Simple Dynamic Table
 */
-var simple_table = {
-	header:null,
-	body:null,
-	div:null,
-	table:null,
-	lookup:null,
-	doc:null,
-	has_header:0
-};
-
-simple_table.init = function(doc) {
+function simple_table(doc, id)
+{
 	this.doc    = doc;
-	this.div    = doc.getElementById('simple_table')
+	this.div    = doc.getElementById(id)
 	this.table  = doc.createElement("table");
+
+	this.header=null;
+	this.body=null;
+	this.has_header=0;
+
+	this.id = id;
+
 	this.div.appendChild(this.table);
 	this.lookup = {};
 	this.create_header();
 	this.create_body();
 }
 
-simple_table.search = function(key)
+simple_table.prototype.search = function(key)
 {
 	if (key in this.lookup)
 	{
@@ -32,7 +30,7 @@ simple_table.search = function(key)
 	}
 }
 
-simple_table.add_cell = function(row, col_no, data)
+simple_table.prototype.add_cell = function(row, col_no, data)
 {
     	var cell = row.insertCell(col_no);
     	var text = this.doc.createTextNode(data);
@@ -40,7 +38,7 @@ simple_table.add_cell = function(row, col_no, data)
     	cell.appendChild(text);
 }
 
-simple_table.update_cell = function(row, col_no, data)
+simple_table.prototype.update_cell = function(row, col_no, data)
 {
 	var cell = row.cells[col_no];
 	cell.setAttribute('data-id', data);
@@ -48,17 +46,17 @@ simple_table.update_cell = function(row, col_no, data)
 }
 
 
-simple_table.create_header = function()
+simple_table.prototype.create_header = function()
 {
 	this.header = this.table.createTHead();
 }
 
-simple_table.create_body = function()
+simple_table.prototype.create_body = function()
 {
 	this.body = this.table.createTBody();
 }
 
-simple_table.add_header = function(header_array) 
+simple_table.prototype.add_header = function(header_array) 
 {
 	var row 	= this.header.insertRow(0);    
 
@@ -70,7 +68,7 @@ simple_table.add_header = function(header_array)
     	}
 }
 
-simple_table.update_header = function(header_array) 
+simple_table.prototype.update_header = function(header_array) 
 {
 	var row 	= this.header.rows[0];
 	var index 	= 0;
@@ -81,7 +79,7 @@ simple_table.update_header = function(header_array)
     	}
 }
 
-simple_table.add_row = function(key, data_array) 
+simple_table.prototype.add_row = function(key, data_array) 
 {
     	var rowCount	= this.body.rows.length;
     	var row		= this.body.insertRow(rowCount);
@@ -102,7 +100,7 @@ simple_table.add_row = function(key, data_array)
     	}
 }
 
-simple_table.delete_row  = function(key)
+simple_table.prototype.delete_row  = function(key)
 {
 	var row = this.search(key); 
        	if ( row != -1)
@@ -113,7 +111,7 @@ simple_table.delete_row  = function(key)
 	}
 }
 
-simple_table.update_row =  function(row, data_array) 
+simple_table.prototype.update_row =  function(row, data_array) 
 {
 	var cols 	= this.header.rows[0].cells.length;
 	var data_len	= data_array.length;
@@ -125,7 +123,7 @@ simple_table.update_row =  function(row, data_array)
     	}
 }
 
-simple_table.update = function(message)
+simple_table.prototype.update = function(message)
 {
 	var parsed_data	= JSON.parse(message);
 
@@ -138,6 +136,16 @@ simple_table.update = function(message)
     			var data = data_list[i];
 			var key = data[0];
         		var row = this.search(key); 
+
+			if (this.has_header == 1)
+			{
+				this.update_header(data);
+			}
+			else
+			{
+				this.add_header(data);
+				this.has_header = 1;
+			}
 
         	 	if ( row != -1)
         		{
